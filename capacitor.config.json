@@ -1,0 +1,8 @@
+{
+  "appId": "id.scanpdf.studio",
+  "appName": "ScanPDF Studio",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": false
+  }
+}
