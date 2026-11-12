@@ -30,7 +30,17 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
+      # Android SDK sudah terpasang di runner ubuntu-latest (ANDROID_HOME); cukup terima lisensi agar Gradle
+      # dapat mengunduh komponen yang kurang. Tidak memakai android-actions/setup-android (sering gagal di sdkmanager).
+      - name: Accept Android SDK licenses
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          SDKM=$(ls "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager 2>/dev/null | sort -V | tail -1 || true)
+          if [ -n "$SDKM" ]; then
+            set +o pipefail
+            yes | "$SDKM" --licenses > /dev/null 2>&1 || true
+          fi
+          ls "$ANDROID_HOME/platforms" "$ANDROID_HOME/build-tools" || true
 
       - name: Install dependencies
         run: npm ci
